@@ -7,28 +7,6 @@ import (
 	"strings"
 )
 
-// loginHandler is a Handler for login requests. Request Body contains user password and email.
-// Handler verifies the password and issues a jwt token
-func loginHandler(w http.ResponseWriter, r *http.Request) {
-	var user, dbObj User
-	err := decodeUserFromBody(r.Body, &user)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	log.Printf("Login request for user %+v", user.Email)
-	ok := verifyDetails(user.Email, user.Password, &dbObj)
-	if !ok {
-		log.Printf("%+v", ok)
-		fmt.Fprint(w, "User and password not found. Verify the credentials.")
-		w.WriteHeader(http.StatusForbidden)
-		return
-	}
-	token, err := generateJWT(user.Email) // issues jwt token
-	fmt.Fprint(w, token)
-	return
-}
-
 // registerHandler is a Handler for login requests
 func registerHandler(w http.ResponseWriter, r *http.Request) {
 	var user User
@@ -56,6 +34,28 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Fprint(w, "Registered Successfully")
 	w.WriteHeader(http.StatusOK)
+	return
+}
+
+// loginHandler is a Handler for login requests. Request Body contains user password and email.
+// Handler verifies the password and issues a jwt token
+func loginHandler(w http.ResponseWriter, r *http.Request) {
+	var user, dbObj User
+	err := decodeUserFromBody(r.Body, &user)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	log.Printf("Login request for user %+v", user.Email)
+	ok := verifyDetails(user.Email, user.Password, &dbObj)
+	if !ok {
+		log.Printf("%+v", ok)
+		w.WriteHeader(http.StatusForbidden)
+		fmt.Fprint(w, "User and password not found. Verify the credentials.")
+		return
+	}
+	token, err := generateJWT(user.Email) // issues jwt token
+	fmt.Fprint(w, token)
 	return
 }
 

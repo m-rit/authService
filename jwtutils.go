@@ -11,6 +11,7 @@ import (
 
 const secretkeyfile = "w5a8T1V+h6aPtVyzYsH2wZkUaxOEYZyKrVYUzRQxC9E="
 
+//generateJWT generates a JWT with user email in the claims
 func generateJWT(userID string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"email": userID,
@@ -25,6 +26,7 @@ func generateJWT(userID string) (string, error) {
 	return tokenString, nil
 }
 
+// verifyAuthn extracts the bearer token and checks if the token is valid
 func verifyAuthn(h http.Header) (any, error) {
 	authHeader := h.Get("Authorization")
 	val := strings.TrimPrefix(authHeader, "Bearer ")
@@ -42,7 +44,7 @@ func verifyAuthn(h http.Header) (any, error) {
 		return nil, errors.New("InvalidToken")
 	}
 	if err != nil {
-		log.Printf("error in validating jwt for %+v, errpr %+v", m["email"], err)
+		log.Printf("error in validating jwt for %+v, error %+v", m["email"], err)
 		return nil, err
 	}
 
