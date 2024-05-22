@@ -1,6 +1,6 @@
 # Authentication Server
 
-This is a simple authentication server implemented in Go (Golang) that provides RESTful APIs for user registration, login, and authentication using JWT (JSON Web Tokens).
+This is a simple authentication server implemented in Go (Golang) that provides APIs for user registration, login, and authentication using JWT (JSON Web Tokens).
 
 ## Features
 
